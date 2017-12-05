@@ -17,14 +17,13 @@
       failed_when: result.rc < 0
       register: result
 
-    - name: download get-pip.py
-      get_url:
-        dest: ~/get-pip.py
-        url: https://bootstrap.pypa.io/get-pip.py
-      when: result.rc == 1
-
-    - name: install pip
-      shell: python ~/get-pip.py
+    - block:
+      - name: download get-pip.py
+        get_url:
+          dest: ~/get-pip.py
+          url: https://bootstrap.pypa.io/get-pip.py
+      - name: install pip
+        shell: python ~/get-pip.py
       when: result.rc == 1
 
     - name: ensure pyOpenSSL installed
