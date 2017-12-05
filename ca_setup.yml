@@ -1,0 +1,60 @@
+#setup self ca
+---
+- hosts: ca_hosts
+  gather_facts: false
+  remote_user: centos
+  become: true
+  become_user: root
+
+  tasks:
+    - name: ensure openssl installed
+      package:
+        name: openssl, python
+        state: latest
+
+    - name: ensure pip installed
+      shell: which pip
+      failed_when: result.rc < 0
+      register: result
+
+    - name: download get-pip.py
+      get_url:
+        dest: ~/get-pip.py
+        url: https://bootstrap.pypa.io/get-pip.py
+      when: result == 1
+
+    - name: install pip
+      shell: python ~/get-pip.py
+      when: result == 1
+
+    - name: ensure pyOpenSSL installed
+      pip:
+        name: pyOpenSSL
+        state: present
+
+    - name: ensure created selfca private key
+      openssl_privatekey:
+        path: /etc/pki/CA/private/cakey.pem
+        state: present
+
+    - name: ensure created csr
+      openssl_csr:
+        commonName: "{{ ca_CN }}"
+        countryName: "{{ ca_C }}"
+        emailAddress: "{{ ca_EMail }}"
+        localityName: "{{ ca_L }}"
+        organizationName: "{{ ca_O }}"
+        organizationalUnitName: "{{ ca_OU }}"
+        path: /etc/pki/CA/cacert.csr
+        privatekey_path: /etc/pki/CA/private/cakey.pem
+        state: present
+        stateOrProvinceName: "{{ ca_ST }}"
+
+    - name: ensure self sighed certificate
+      openssl_certificate:
+        csr_path: /etc/pki/CA/cacert.csr
+        path: /etc/pki/CA/cacert.pem
+        privatekey_path: /etc/pki/CA/private/cakey.pem
+        provider: selfsigned
+        state: present
+        valid_in: 157680000

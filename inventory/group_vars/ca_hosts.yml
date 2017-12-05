@@ -1,0 +1,24 @@
+---
+#private key cipher of CA. available algorithm list by command as follows. #openssl list-cipher-algorithms
+ca_privatekey_cipher:
+
+#commonName
+ca_CN: myhost
+
+#countryName
+ca_C: JP
+
+#emailAddress
+ca_EMail: hogehoge@hogehoge.hoge
+
+#localityName
+ca_L: Shinagawa
+
+#organizationName
+ca_O: my company
+
+#organizationalUnitName
+ca_OU: my division
+
+#stateOrProvinceName
+ca_ST: Tokyo
