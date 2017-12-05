@@ -1,7 +1,4 @@
 ---
-#private key cipher of CA. available algorithm list by command as follows. #openssl list-cipher-algorithms
-ca_privatekey_cipher:
-
 #commonName
 ca_CN: myhost
 
