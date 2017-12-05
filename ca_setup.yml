@@ -21,11 +21,11 @@
       get_url:
         dest: ~/get-pip.py
         url: https://bootstrap.pypa.io/get-pip.py
-      when: result == 1
+      when: result == 0
 
     - name: install pip
       shell: python ~/get-pip.py
-      when: result == 1
+      when: result == 0
 
     - name: ensure pyOpenSSL installed
       pip:
