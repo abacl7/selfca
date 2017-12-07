@@ -14,3 +14,5 @@ commands
 
 `ansible-playbook -i inventory/inventory.ini gen_cert.yml`
 
+
+more detail: (sorry, written in japanese)  https://qiita.com/abacl7/items/f7f1e32137aafddc6683
