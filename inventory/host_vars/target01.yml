@@ -1,0 +1,21 @@
+---
+#commonName
+target_CN: hoge.hogehoge.hoge
+
+#countryName
+target_C: JP
+
+#emailAddress
+target_EMail: hoge@hogehoge.hoge
+
+#localityName
+target_L: Shinagawa
+
+#organizationName
+target_O: my company
+
+#organizationalUnitName
+target_OU: my division
+
+#stateOrProvinceName
+target_ST: Tokyo

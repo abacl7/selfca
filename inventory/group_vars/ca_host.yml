@@ -1,6 +1,6 @@
 ---
 #commonName
-ca_CN: myhost
+ca_CN: myCA.hogehoge.hoge
 
 #countryName
 ca_C: JP

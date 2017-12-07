@@ -1,0 +1,29 @@
+#generate cert
+---
+- hosts: ca_host
+  gather_facts: false
+  become: true
+  tasks:
+    - name: ensure store fir exist
+      file:
+        mode: 0664
+        path: "{{ ca_csr_store_dir }}"
+        state: directory
+
+    - name: ensure copy csr files to ca site
+      copy:
+        dest: "{{ ca_csr_store_dir }}/{{ item }}.csr"
+        src: "{{ local_store_dir }}/{{ item }}.csr"
+      with_items: "{{ groups['target_hosts'] }}"
+
+    - name: ensure sighed certificate
+      shell: openssl ca -cert /etc/pki/CA/cacert.pem -keyfile /etc/pki/CA/private/cakey.pem -in "{{ ca_csr_store_dir }}/{{ item }}.csr" -out "{{ ca_csr_store_dir }}/{{ item }}.cert.pem" -days 3650 -batch
+      with_items: "{{ groups['target_hosts'] }}"
+
+    - name: ensure fetch csr file
+      fetch:
+        dest: "{{ local_store_dir }}/{{ item }}.cert.pem"
+        fail_on_missing: yes
+        flat: yes
+        src: "{{ ca_csr_store_dir }}/{{ item }}.cert.pem"
+      with_items: "{{ groups['target_hosts'] }}"

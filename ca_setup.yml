@@ -1,6 +1,7 @@
 #setup self ca
+#this playbook required ansible 2.4 or later
 ---
-- hosts: ca_hosts
+- hosts: ca_host
   gather_facts: false
   become: true
 
@@ -54,4 +55,26 @@
         privatekey_path: /etc/pki/CA/private/cakey.pem
         provider: selfsigned
         state: present
-        valid_in: 157680000
+        valid_in: 315360000
+
+    - name: ensure CA cert convert to DER for client
+      shell: openssl x509 -inform PEM -outform DER -in /etc/pki/CA/cacert.pem -out /etc/pki/CA/MyCAcert.der
+      args:
+        creates: /etc/pki/CA/MyCAcert.der
+
+    - name: ensure index file created
+      file:
+        path: /etc/pki/CA/index.txt
+        state: touch
+
+    - name: ensure serial file created
+      shell: echo "01" > /etc/pki/CA/serial
+      args:
+        creates: /etc/pki/CA/serial
+
+    - name: ensure download CA cert
+      fetch:
+        dest: "{{ local_store_dir }}/MyCAcert.der"
+        fail_on_missing: yes
+        flat: yes
+        src: "/etc/pki/CA/MyCAcert.der"

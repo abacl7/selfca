@@ -1,0 +1,60 @@
+#generate private key and csr
+---
+- hosts: target_hosts
+  gather_facts: false
+  become: true
+  tasks:
+    - name: ensure openssl installed
+      package:
+        name: openssl, python
+        state: latest
+
+    - name: ensure pip installed
+      shell: which pip
+      failed_when: result.rc < 0
+      register: result
+
+    - block:
+      - name: download get-pip.py
+        get_url:
+          dest: ~/get-pip.py
+          url: https://bootstrap.pypa.io/get-pip.py
+      - name: install pip
+        shell: python ~/get-pip.py
+      when: result.rc == 1
+
+    - name: ensure pyOpenSSL installed
+      pip:
+        name: pyOpenSSL
+        state: present
+
+    - name: ensure store fir exist
+      file:
+        mode: 0664
+        path: "{{ remote_store_dir }}"
+        state: directory
+
+    - name: ensure created target hosts private key
+      openssl_privatekey:
+        path: "{{ remote_store_dir }}/{{ inventory_hostname }}_key.pem"
+        state: present
+
+    - name: ensure created csr
+      openssl_csr:
+        commonName: "{{ target_CN }}"
+        countryName: "{{ target_C }}"
+        emailAddress: "{{ target_EMail }}"
+        localityName: "{{ target_L }}"
+        organizationName: "{{ target_O }}"
+        organizationalUnitName: "{{ target_OU }}"
+        path: "{{ remote_store_dir }}/{{ inventory_hostname }}.csr"
+        privatekey_path: "{{ remote_store_dir }}/{{ inventory_hostname }}_key.pem"
+        state: present
+        stateOrProvinceName: "{{ target_ST }}"
+
+    - name: ensure fetch csr file
+      fetch:
+        dest: "{{ local_store_dir }}/{{ inventory_hostname }}.csr"
+        fail_on_missing: yes
+        flat: yes
+        src: "{{ remote_store_dir }}/{{ inventory_hostname }}.csr"

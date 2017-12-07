@@ -1,0 +1,12 @@
+---
+# how long certificate is available(secound) 157680000 = almost 5 years :)
+certification_available_sec: 157680000
+
+# certificate store dir of playbook playing host
+local_store_dir: ~/certificate_store
+
+# certificate file store dir of remote hosts
+remote_store_dir: /etc/pki/mycertificates
+
+# csr file store dir of ca host
+ca_csr_store_dir: /etc/pki/csr_store
