@@ -1,7 +1,4 @@
 ---
-# how long certificate is available(secound) 157680000 = almost 5 years :)
-certification_available_sec: 157680000
-
 # certificate store dir of playbook playing host
 local_store_dir: ~/certificate_store
 
