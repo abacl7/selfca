@@ -1,6 +1,9 @@
-make self ca and key, then sign server certificate by ansible
+## make self ca and key, then sign server certificate by ansible
 
-commands
+#### requirement
+  - ansible 2.4 +
+
+#### commands
 
 1. Generate new SelfCA site
 
